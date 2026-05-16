@@ -1,4 +1,4 @@
-name: Greeting
+name: Greeting1
 on: workflow_dispatch
 jobs:
   greet:
