@@ -3,9 +3,9 @@ import { render, screen } from '@testing-library/react';
 import { describe, test, expect } from 'vitest'
 import App from './App';
 
-test('renders Github Actions heading', () => {
+test('renders main heading', () => {
   render(<App />);
-  const headingElement = screen.getByText(/Github Actions/i);
+  const headingElement = screen.getByText(/Intelligence/i);
   expect(headingElement).toBeInTheDocument();
 });
 
