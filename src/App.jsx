@@ -227,6 +227,10 @@ function useInView(threshold = 0.12) {
   const ref = useRef();
   const [inView, setInView] = useState(false);
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setInView(true); },
       { threshold }
@@ -547,6 +551,7 @@ export default function App() {
   const [active, setActive] = useState("overview");
 
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
     const ids = ["overview", "knowledge", "stack", "about"];
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) setActive(e.target.id); }),
