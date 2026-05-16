@@ -18,7 +18,7 @@ jobs:
       - name: Cache file
         uses: actions/cache@v5
         with:
-          path: path/to/dependencies
+          path: ~/.npm
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install Dependencies
@@ -45,7 +45,7 @@ jobs:
       - name: Cache file
         uses: actions/cache@v5
         with:
-          path: path/to/dependencies
+          path: ~/.npm
           key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
 
       - name: Install Dependencies
