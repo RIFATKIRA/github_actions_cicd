@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://github.com/RIFATKIRA.io/github_actions_cicd",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

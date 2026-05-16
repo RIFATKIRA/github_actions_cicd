@@ -1,80 +1,81 @@
 name: Greeting2
 on: [push, workflow_dispatch]
+
 jobs:
   Test:
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
-        uses: actions/checkout@v4   # ✅ add 'v'
+        uses: actions/checkout@v4
 
-      - name: Install node
-        uses: actions/setup-node@v4  # ✅ add 'v'
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Print node version
+      - name: Print Node version
         run: node -v
 
-      - name: Cache file
+      - name: Cache npm dependencies
         uses: actions/cache@v5
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          # Use package-lock.json for cache key (not "lockfiles")
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Run test
+      - name: Run tests
         run: npm run test
+
   Build:
     needs: Test
-    runs-on: Ubuntu-latest
+    runs-on: ubuntu-latest    # ✅ lowercase 'u'
     steps:
       - name: Get Code
-        uses: actions/checkout@v4   # ✅ add 'v'
+        uses: actions/checkout@v4
 
-      - name: Install node
-        uses: actions/setup-node@v4  # ✅ add 'v'
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Print node version
+      - name: Print Node version
         run: node -v
 
-      - name: Cache file
+      - name: Cache npm dependencies
         uses: actions/cache@v5
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build Project
+      - name: Build project
         run: npm run build
 
-      - name: Upload dist artifact
-        uses: actions/upload-artifact@v7
+      # ✅ Use the dedicated Pages artifact uploader
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-            name: dist-files
-            path: dist
+          path: dist   # your build output directory
 
   deploy:
     needs: Build
     permissions:
       pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
+      id-token: write   # to verify the deployment origin
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
-        with:
-            token: ${{secrets.GITHUB_TOKEN}}
+        uses: actions/deploy-pages@v4
