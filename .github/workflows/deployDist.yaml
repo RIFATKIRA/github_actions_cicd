@@ -61,13 +61,20 @@ jobs:
 
   deploy:
     needs: Build
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
     runs-on: ubuntu-latest
     steps:
-      - name: Download dist artifact
-        uses: actions/download-artifact@v8
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
         with:
-            name: dist-files
-            path: dist
-
-      - name: Deploy
-        run: echo "Successfully deploied"
+            token: ${{secrets.GITHUB_TOKEN}}
