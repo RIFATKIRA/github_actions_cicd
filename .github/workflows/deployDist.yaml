@@ -26,10 +26,9 @@ jobs:
 
       - name: Run test
         run: npm run test
-
-  deploy:
+  Build:
     needs: Test
-    runs-on: ubuntu-latest
+    runs-on: Ubuntu-latest
     steps:
       - name: Get Code
         uses: actions/checkout@v4   # ✅ add 'v'
@@ -52,7 +51,23 @@ jobs:
         run: npm ci
 
       - name: Build Project
-        run: npm run build 
-      
+        run: npm run build
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v7
+        with:
+            name: dist-files
+            path: dist
+
+  deploy:
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v8
+        with:
+            name: dist-files
+            path: dist
+
       - name: Deploy
         run: echo "Successfully deploied"
